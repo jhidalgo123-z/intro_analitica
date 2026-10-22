@@ -51,9 +51,20 @@ touch data/raw/.gitkeep data/processed/.gitkeep models/.gitkeep
 Abran `pyproject.toml` y `uv.lock` y respondan **entre los tres**:
 
 1. ¿Qué versión exacta de `pandas` quedó en `uv.lock`? ¿Qué rango quedó en `pyproject.toml`?
-2. ¿Cuántos paquetes hay en `uv.lock`? (pista: `uv tree` o buscar `[[package]]`). ¿Por qué son muchos más que los que instalaron?
-3. ¿Qué pasa si borran `.venv/` y ejecutan `uv run python -c "import pandas"`?
+version pandas = name = "pandas"
+en el uv.lock version = "3.0.6"
+en el pyproject.toml pandas>=3.0.6
 
+En pyproject.toml aparece pandas>=3.0.6 porque se permite instalar la versión 3.0.6 o cualquier versión superior compatible. Sin embargo, en uv.lock queda registrada la versión exacta instalada, lo que garantiza que todos los integrantes del equipo trabajen con las mismas dependencias y obtengan los mismos resultados.
+
+2. ¿Cuántos paquetes hay en `uv.lock`? (pista: `uv tree` o buscar `[[package]]`). ¿Por qué son muchos más que los que instalaron?
+En uv.lock hay 138 paquetes. Esto es mucho más que las librerías que instalamos directamente (pandas, numpy, matplotlib, seaborn, scikit-learn, jupyter, etc.) porque cada una de ellas necesita otras librerías para funcionar. Estas dependencias adicionales se instalan automáticamente y también quedan registradas en uv.lock.
+
+Por ejemplo, pandas depende de otras librerías como numpy, y herramientas como jupyter e ipykernel requieren numerosos paquetes adicionales para gestionar notebooks, kernels y componentes interactivos. Por eso el número total de paquetes crece rápidamente.
+
+La función de uv.lock es registrar todas las dependencias directas e indirectas, garantizando que cualquier persona del equipo instale exactamente el mismo entorno y obtenga los mismos resultados
+3. ¿Qué pasa si borran `.venv/` y ejecutan `uv run python -c "import pandas"`?
+Al borrar .venv, se elimina el entorno virtual. Sin embargo, al ejecutar uv run, uv puede recrearlo automáticamente e instalar las dependencias definidas en el proyecto, permitiendo seguir trabajando con el mismo entorno
 ### Paso 3: Probar la reproducibilidad (15 min)
 
 1. El piloto comprime la carpeta **sin `.venv/`** y la comparte por el chat de Zoom. Mientras no tengan GitHub, esta es la forma de pasarse el proyecto; en el módulo 01 lo reemplazamos por un repositorio.
@@ -102,7 +113,9 @@ La carpeta `proyecto-<nombre-equipo>/` con:
 ## Preguntas para la plenaria
 
 1. ¿Por qué `.venv/` no se comparte pero `uv.lock` sí?
+el .venv es un entorno y es muy pesado esto imposibilita la facil descarga del modelo
 2. ¿Qué error les salió y cómo lo resolvieron? (esto ayuda a todo el grupo)
+
 3. En una frase: ¿qué ventaja tiene `uv` frente a `pip install` global?
 
 ## Para la próxima sesión
